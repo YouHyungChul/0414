@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function getInfo(obj){
+            // 파일탐색기로부터 선택한 파일의 경로를 이용하여,
+            // 파일명과 확장자를 분리시켜보자!!
+            // alert(obj.value);
+            // obj.value는 문자열이므로, String 객체이며 String객체의
+            // API를 이용하여 풀이!!!
+            // var arr = obj.value.split(".");
+            // document.write(arr[0]);
+            // document.write("<br>");
+            // document.write(arr[1]);
+
+            // 마지막 역슬래시의 위치를 파악해보자
+            // 왜 파악해야하나? 위치를 알아야만 그 이후의 문자열들을 추출할 수 있으므로
+            var index = obj.value.lastIndexOf("\\");
+            // document.write("마지막 역슬래시의 위치는" + index);
+            // 2단계 : 위치를 알아냈으니, 일부 문자열 추출이 가능하다!!
+            //  발견된 위치 다음서부터 ~~~ 끝까지!!
+            var file = obj.value.substring(index+1, obj.value.length);
+            // document.write(file);
+            var arr = file.split("."); //점을 기준으로 배열화 시킨다!!
+                                                // 배열 길이는 2개... 0번째 : 파일명, 1번째 : 확장자
+            document.getElementById("filename").value=arr[0];
+            document.getElementById("ext").value=arr[1];
+
+        }
+    </script>
+</head>
+<body>
+    <!-- /* */ 여기서 this는 input type="file" 임  -->
+    <input type="file" onchange="getInfo(this)"><br>  
+    선택한 파일 경로 : <input type="text" size="30"/> <br>
+    파일명 : <input type="text" size="30" id="filename"/> <br>
+    확장자 : <input type="text" size="30" id="ext"/> <br>
+</body>
+</html>

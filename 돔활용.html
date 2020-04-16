@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        /*아래에 작성된 select 태그를 자바스크립트에서 제어할 수 있는 시점은
+        select 요소에 1:1 대응하는 select Object가 생성된 이후 시점부터 가능
+        따라서, 지금까지 요소에 저근을 할 때, load 이벤트가 발생한 시점부터
+        코드를 작성했던것이다.*/
+        //object는 속성 아니면 메소드 둘중 하나임.
+        addEventListener("load",function(){
+            var sel = document.getElementById("fruit");
+            sel.options; // select 돔객체가 보유한 속성 중 배열!!
+            console.log("셀렉트박스의 옵션수는",sel.options.length);
+        });
+    </script>
+</head>
+<body>
+    <select id="fruit">
+        <option>사과</option>
+    </select>
+</body>
+</html>

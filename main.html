@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container{
+            width: 100%;
+            height: 600px;
+            overflow: hidden; /*화면에 가려진 맵이나 아이템들에 의해 스크롤 생기지 않도록*/
+            position: relative;
+            background-image: url("../images/megaman/bg.jpg");
+            background-size: 100% 600px;
+        }
+    </style>
+    <script src="../Day-14/ObjectManager.js"></script>
+    <script src="../Day-14/GameObject.js"></script>
+    <script src="../Day-14/Enemy.js"></script>
+    <script src="../Day-14/Meagaman.js"></script>
+    <script src="../Day-14/Block.js"></script>
+    <script src="../Day-14/Bullet.js"></script>
+    <script src="../js/lib.js"></script>
+    <script>
+        var container;
+        var objectManager; //객체 관리자
+        var megaman;
+        var map = [
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        ];
+
+        window.addEventListener("load", function(){
+            container = document.getElementById("container");
+            objectManager = new ObjectManager();
+
+            createEnemy();
+            createMegaman();
+            createBlock();
+            gameLoop();
+
+            //키보드 이벤트 구현!!
+            document.body.addEventListener("keydown",function(e){
+                switch(e.keyCode){
+                    case 37 : megaman.velX = -5; break;
+                    case 39 : megaman.velX = 5; break;
+                    case 32 : fire(); break;
+                }
+            });
+            document.body.addEventListener("keyup",function(e){
+                switch(e.keyCode){
+                    case 37 : megaman.velX = 0; break;
+                    case 39 : megaman.velX = 0; break;
+                }
+            });
+        });
+
+        function createEnemy(){
+            // container,src,width,height,velX,velY,x,y
+            var enemy = new Enemy("Enemy",container,"../images/megaman/e2.gif",100,90,-1,0,500,420);
+            // 생성된 적군을 객체 매니저에게 등록의뢰하자!!
+            // 왜 해야하나? 등록만 하면 ObjectManager가 알아서 tick(),render() 해준다
+            objectManager.addObject(enemy);
+        }
+
+        //주인공 생성!!
+        function createMegaman(){
+            // container,src,width,height,velX,velY,x,y
+            megaman = new Megaman("Megaman",container,"../images/megaman/sprite.jpg",50,60,0,0,50,400);
+            objectManager.addObject(megaman);
+        }
+
+        // 총알발사
+        function fire(){
+            // container,src,width,height,velX,velY,x,y
+            var bullet = new Bullet("Bullet", container,"../images/megaman/bullet.png",20,16,12,0,megaman.x,megaman.y)
+            objectManager.addObject(bullet);
+        }
+        //블럭생성
+        function createBlock(){
+            // container,src,width,height,velX,velY,x,y
+            for(var a=0; a<map.length; a++){
+                for(var i=0; i<map[a].length;i++){
+                    if(map[a][i]==1){
+                        var block = new Block("Block",container,"../images/mario/block.png",50,50,0,0,(i*50),(a*50));
+                        objectManager.addObject(block); //등록
+                        }
+                }
+            }
+
+
+        }
+        function gameLoop(){
+            // console.log("gameLoop() called...");
+
+            // tick(), render() 뿐 아니라, 화면에서 제거되어야 할 처리를
+            // 전담할 객체를 하나두면 유지보수하기 편하다!!!
+            // 선택사항이지만 유지보수성을 높이기 때문에, 이 개발패턴을
+            // 따르면 좋다.. 이렇게 개발패턴을 강요하는 방식을 프레임워크라 한다.
+            // 프레임워크를 이용하면 개발시간 단축, 유지보수성이 높아진다.
+            // 현실분야에서 프레임워크 : 사발면!! (물만 부으면 끄읏)
+            objectManager.tick();
+            objectManager.render();
+
+            setTimeout(gameLoop,10);
+        }
+    </script>
+</head>
+<body>
+    <div id="container"></div>
+</body>
+</html>
